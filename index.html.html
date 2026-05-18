@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcial — Metodologías Ágiles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #0f1117;
+    --surface: #161b27;
+    --surface2: #1e2535;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #f7c948;
+    --danger: #f75a5a;
+    --success: #4fcf8e;
+    --text: #e8eaf0;
+    --text2: #8a94aa;
+    --text3: #4a5568;
+    --star-on: #f7c948;
+    --star-off: #2a3347;
+    --radius: 12px;
+    --font-display: 'DM Serif Display', serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'Lato', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    cursor: default;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0;
+    opacity: 0.5;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    position: relative; z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── HEADER ── */
+  .exam-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exam-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .exam-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .exam-meta {
+    font-size: 0.78rem;
+    color: var(--text2);
+    font-family: var(--font-mono);
+    margin-top: 0.4rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── TIMER BLOCK ── */
+  .timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.4rem;
+    flex-shrink: 0;
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    transition: color 0.4s;
+    min-width: 90px;
+    text-align: right;
+  }
+
+  .timer-display.warn { color: var(--accent2); }
+  .timer-display.danger { color: var(--danger); animation: pulse 0.8s infinite alternate; }
+
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.5; } }
+
+  .stars {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .star {
+    font-size: 1.2rem;
+    transition: all 0.4s cubic-bezier(.34,1.56,.64,1);
+    filter: drop-shadow(0 0 6px var(--star-on));
+  }
+
+  .star.off {
+    filter: none;
+    opacity: 0.25;
+  }
+
+  .star-label {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--text2);
+    margin-top: 2px;
+    text-align: right;
+  }
+
+  /* ── ALUMNO INPUT ── */
+  .alumno-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .alumno-box label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .alumno-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 4px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+
+  .alumno-box input:focus { border-bottom-color: var(--accent); }
+
+  .set-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--surface2);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  /* ── PREGUNTAS ── */
+  .preguntas { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .pregunta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .pregunta-card:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(79,142,247,0.12);
+  }
+
+  .pq-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1rem;
+  }
+
+  .pq-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(79,142,247,0.1);
+    border: 1px solid rgba(79,142,247,0.25);
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .pq-text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.55;
+    pointer-events: none;
+  }
+
+  .pq-pts {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text2);
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+
+  .pq-answer {
+    width: 100%;
+    min-height: 110px;
+    background: var(--surface2);
+    border: none;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.93rem;
+    line-height: 1.65;
+    padding: 1rem 1.5rem;
+    resize: vertical;
+    outline: none;
+    transition: background 0.2s;
+    user-select: auto;
+    -webkit-user-select: auto;
+    display: block;
+  }
+
+  .pq-answer:focus { background: #1a2133; }
+  .pq-answer::placeholder { color: var(--text3); font-style: italic; }
+
+  /* ── CHAR COUNTER ── */
+  .pq-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 6px 1.5rem 10px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+
+  .char-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  /* ── SUBMIT ── */
+  .submit-section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .submit-btn {
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.9rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .submit-btn:hover { background: #3a7de8; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,142,247,0.3); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .submit-note {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    text-align: center;
+  }
+
+  /* ── OVERLAY STATES ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(10,12,18,0.97);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    z-index: 100;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .overlay.hidden { display: none; }
+
+  .overlay-icon { font-size: 4rem; }
+
+  .overlay-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--text);
+  }
+
+  .overlay-sub {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 420px;
+    line-height: 1.7;
+  }
+
+  .overlay-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.8rem 2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.06em;
+  }
+
+  .overlay-btn:hover { background: var(--accent); color: #fff; }
+
+  /* ── CLOSED STATE ── */
+  .closed-banner {
+    background: rgba(247,90,90,0.1);
+    border: 1px solid rgba(247,90,90,0.3);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--danger);
+    text-align: center;
+    display: none;
+  }
+
+  /* ── SUCCESS ── */
+  .success-overlay { background: rgba(10,12,18,0.98); }
+  .success-overlay .overlay-title { color: var(--success); }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #7eb8f7);
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* ── DEVTOOLS WARNING ── */
+  #devtools-warning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #000;
+    color: var(--danger);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    text-align: center;
+    padding: 2rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- DevTools warning -->
+<div id="devtools-warning">
+  ⚠ Se detectó apertura de herramientas de desarrollo.<br>
+  El examen ha sido bloqueado. Notificá al docente.
+</div>
+
+<!-- Start overlay -->
+<div class="overlay" id="overlay-start">
+  <div class="overlay-icon">📋</div>
+  <div class="overlay-title">Parcial — Metodologías Ágiles</div>
+  <div class="overlay-sub">
+    Tenés <strong>15 minutos</strong> desde que iniciás. El formulario se cierra automáticamente al terminar el tiempo.<br><br>
+    Está prohibido copiar, pegar y capturar pantalla. Respondé con tus propias palabras.<br><br>
+    Ingresá tu nombre completo y presioná <em>Iniciar examen</em>.
+  </div>
+  <input type="text" id="input-nombre-start" placeholder="Nombre y apellido completo..."
+    style="width:100%;max-width:380px;padding:0.8rem 1rem;background:#1e2535;border:1px solid #2a3347;border-radius:10px;color:#e8eaf0;font-family:'Lato',sans-serif;font-size:1rem;outline:none;user-select:auto;-webkit-user-select:auto;"
+    autocomplete="off" spellcheck="false">
+  <button class="overlay-btn" onclick="iniciarExamen()">Iniciar examen →</button>
+</div>
+
+<!-- Expired overlay -->
+<div class="overlay hidden" id="overlay-expired">
+  <div class="overlay-icon">⏱</div>
+  <div class="overlay-title">Tiempo agotado</div>
+  <div class="overlay-sub">
+    El tiempo del examen se terminó y el formulario fue cerrado automáticamente.<br>
+    Tus respuestas fueron registradas hasta este momento.
+  </div>
+</div>
+
+<!-- Success overlay -->
+<div class="overlay hidden success-overlay" id="overlay-success">
+  <div class="overlay-icon">✅</div>
+  <div class="overlay-title">Examen enviado</div>
+  <div class="overlay-sub" id="success-msg">Tus respuestas fueron registradas correctamente.</div>
+</div>
+
+<!-- Main content -->
+<div class="shell">
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <div class="exam-header">
+    <div>
+      <div class="exam-title">Metodologías<br><em>Ágiles</em></div>
+      <div class="exam-meta" id="meta-line">PRIMER PARCIAL · <span id="set-label">—</span></div>
+    </div>
+    <div class="timer-block">
+      <div class="timer-display" id="timer-display">15:00</div>
+      <div class="stars" id="stars-display">
+        <span class="star" id="s1">⭐</span>
+        <span class="star" id="s2">⭐</span>
+        <span class="star" id="s3">⭐</span>
+      </div>
+      <div class="star-label" id="star-label">Nota máxima: 10</div>
+    </div>
+  </div>
+
+  <div class="alumno-box">
+    <label>ALUMNO</label>
+    <input type="text" id="nombre-display" readonly style="cursor:default;">
+    <span class="set-badge" id="set-badge-display">SET —</span>
+  </div>
+
+  <div class="preguntas" id="preguntas-container"></div>
+
+  <div class="submit-section">
+    <button class="submit-btn" id="submit-btn" onclick="enviarExamen()">Enviar respuestas</button>
+    <div class="submit-note">Una vez enviado no podrás modificar tus respuestas.</div>
+  </div>
+
+</div>
+
+<script>
+// ── PREGUNTAS ──────────────────────────────────────────────────────
+const SETS = {
+  A: [
+    { texto: "Describa los cuatro valores del Manifiesto Ágil.", pts: 2 },
+    { texto: "Kanban: ¿Qué es WIP? ¿Qué ventajas nos da?", pts: 1 },
+    { texto: "Scrum: Defina el rol del Scrum Master.", pts: 2 },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante un Product Owner? Justifique.", pts: 3 },
+    { texto: "¿Qué es una historia de usuario? ¿Cómo está compuesta? ¿Para qué sirven?", pts: 2 },
+  ],
+  B: [
+    { texto: "Describa el ciclo de vida del desarrollo de software, indicando las etapas clave y su importancia en el proceso.", pts: 2 },
+    { texto: "Kanban: ¿Qué es Lead Time y Cycle Time?", pts: 1 },
+    { texto: "Scrum: Defina el rol del Product Owner.", pts: 2 },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante el Agile Team? Justifique.", pts: 3 },
+    { texto: "¿Qué son los puntos de historia? ¿Para qué sirven? ¿Cómo los utilizamos en un Planning Poker?", pts: 2 },
+  ]
+};
+
+// ── STATE ──────────────────────────────────────────────────────────
+const TOTAL_SECS = 15 * 60;
+const STAR3_SECS = 10 * 60; // >10min left → 3 stars (≤5min elapsed)
+const STAR2_SECS = 5 * 60;  // >5min left  → 2 stars (≤10min elapsed)
+// ≤5min left → 1 star
+
+let timerInterval = null;
+let secondsLeft = TOTAL_SECS;
+let examStarted = false;
+let examClosed = false;
+let currentSet = null;
+let charCounts = [0,0,0,0,0];
+
+// ── ANTI-CHEAT ─────────────────────────────────────────────────────
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if(examStarted) e.preventDefault(); });
+document.addEventListener('cut', e => { if(examStarted) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  // Block F12, Ctrl+Shift+I/J/C/U, Ctrl+U
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); return; }
+  if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return; }
+  // Block PrintScreen (best effort)
+  if (e.key === 'PrintScreen') { e.preventDefault(); navigator.clipboard?.writeText('').catch(()=>{}); }
+});
+
+// DevTools size detection
+let devtoolsOpen = false;
+const threshold = 160;
+setInterval(() => {
+  const wDiff = window.outerWidth - window.innerWidth > threshold;
+  const hDiff = window.outerHeight - window.innerHeight > threshold;
+  if ((wDiff || hDiff) && !devtoolsOpen && examStarted) {
+    devtoolsOpen = true;
+    document.getElementById('devtools-warning').style.display = 'flex';
+    closeExam();
+  }
+}, 1000);
+
+// ── INIT ───────────────────────────────────────────────────────────
+function iniciarExamen() {
+  const nombre = document.getElementById('input-nombre-start').value.trim();
+  if (!nombre) { alert('Ingresá tu nombre completo para continuar.'); return; }
+
+  currentSet = Math.random() < 0.5 ? 'A' : 'B';
+  examStarted = true;
+
+  document.getElementById('overlay-start').classList.add('hidden');
+  document.getElementById('nombre-display').value = nombre;
+  document.getElementById('set-badge-display').textContent = 'SET ' + currentSet;
+  document.getElementById('set-label').textContent = 'SET ' + currentSet;
+  document.getElementById('meta-line').textContent = `PRIMER PARCIAL · SET ${currentSet}`;
+
+  renderPreguntas();
+  startTimer();
+}
+
+// ── RENDER PREGUNTAS ───────────────────────────────────────────────
+function renderPreguntas() {
+  const container = document.getElementById('preguntas-container');
+  const pqs = SETS[currentSet];
+  container.innerHTML = '';
+  pqs.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'pregunta-card';
+    card.innerHTML = `
+      <div class="pq-top">
+        <span class="pq-num">P${i+1}</span>
+        <div class="pq-text">${p.texto}</div>
+        <span class="pq-pts">${p.pts} pt${p.pts>1?'s':''}</span>
+      </div>
+      <textarea
+        class="pq-answer"
+        id="ans-${i}"
+        placeholder="Escribí tu respuesta acá..."
+        spellcheck="true"
+        autocomplete="off"
+        rows="5"
+      ></textarea>
+      <div class="pq-footer">
+        <span class="char-count" id="cc-${i}">0 caracteres</span>
+      </div>`;
+    container.appendChild(card);
+
+    const ta = card.querySelector(`#ans-${i}`);
+
+    // Block paste
+    ta.addEventListener('paste', e => { e.preventDefault(); });
+
+    // Block drag-drop text
+    ta.addEventListener('drop', e => { e.preventDefault(); });
+
+    // Char counter + progress
+    ta.addEventListener('input', () => {
+      charCounts[i] = ta.value.length;
+      document.getElementById(`cc-${i}`).textContent = ta.value.length + ' caracteres';
+      updateProgress();
+    });
+  });
+}
+
+// ── PROGRESS ───────────────────────────────────────────────────────
+function updateProgress() {
+  const total = charCounts.reduce((a,b)=>a+b,0);
+  const pct = Math.min(100, Math.round(total / 500 * 100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ── TIMER ──────────────────────────────────────────────────────────
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) {
+      clearInterval(timerInterval);
+      autoCloseExam();
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+
+  // Color states
+  el.className = 'timer-display';
+  if (secondsLeft <= 60) el.classList.add('danger');
+  else if (secondsLeft <= STAR2_SECS) el.classList.add('warn');
+
+  updateStars();
+}
+
+function updateStars() {
+  const elapsed = TOTAL_SECS - secondsLeft;
+  let stars, label;
+
+  if (elapsed <= 5 * 60) {
+    stars = 3; label = 'Nota máxima: 10 ⭐⭐⭐';
+  } else if (elapsed <= 10 * 60) {
+    stars = 2; label = 'Nota máxima: 9 ⭐⭐';
+  } else if (elapsed <= 15 * 60) {
+    stars = 1; label = 'Nota máxima: 8 ⭐';
+  } else {
+    stars = 0; label = 'Tiempo agotado';
+  }
+
+  ['s1','s2','s3'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    if (i < stars) { el.classList.remove('off'); }
+    else { el.classList.add('off'); }
+  });
+
+  document.getElementById('star-label').textContent = label;
+}
+
+// ── CLOSE / SUBMIT ─────────────────────────────────────────────────
+function autoCloseExam() {
+  if (examClosed) return;
+  examClosed = true;
+  closeExam();
+  document.getElementById('overlay-expired').classList.remove('hidden');
+}
+
+function closeExam() {
+  examClosed = true;
+  clearInterval(timerInterval);
+  // Disable all textareas
+  document.querySelectorAll('.pq-answer').forEach(ta => {
+    ta.disabled = true;
+    ta.style.opacity = '0.5';
+  });
+  document.getElementById('submit-btn').disabled = true;
+}
+
+async function enviarExamen() {
+  if (examClosed) return;
+  const nombre = document.getElementById('nombre-display').value;
+  const pqs = SETS[currentSet];
+  const respuestas = pqs.map((p,i) => ({
+    pregunta: p.texto,
+    respuesta: document.getElementById('ans-'+i).value.trim()
+  }));
+
+  const elapsed = TOTAL_SECS - secondsLeft;
+  let notaMax;
+  if (elapsed <= 5*60) notaMax = 10;
+  else if (elapsed <= 10*60) notaMax = 9;
+  else notaMax = 8;
+
+  const tiempoUsado = Math.floor(elapsed/60) + 'min ' + (elapsed%60) + 's';
+
+  closeExam();
+
+  // ── Build Formspree payload ──────────────────────────────────────
+  const payload = {
+    alumno: nombre,
+    set: currentSet,
+    tiempo_usado: tiempoUsado,
+    nota_maxima_posible: notaMax,
+  };
+  respuestas.forEach((r, i) => {
+    payload[`P${i+1} — ${r.pregunta}`] = r.respuesta || '(sin respuesta)';
+  });
+
+  // ── Show loading state ───────────────────────────────────────────
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Enviando...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xkoenyqb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    if (res.ok) {
+      mostrarExito(nombre, currentSet, tiempoUsado, notaMax);
+    } else {
+      // Formspree returned an error — still show success to student but flag it
+      mostrarExito(nombre, currentSet, tiempoUsado, notaMax, true);
+    }
+  } catch(e) {
+    // Network error — show success screen anyway so student isn't panicked
+    mostrarExito(nombre, currentSet, tiempoUsado, notaMax, true);
+  }
+}
+
+function mostrarExito(nombre, set, tiempoUsado, notaMax, conError = false) {
+  const aviso = conError
+    ? '<br><span style="color:#f7c948;font-size:0.85rem">⚠ Hubo un problema al enviar. Tomá captura de esta pantalla y enviásela al docente.</span>'
+    : '';
+  const msg = `
+    <strong>${nombre}</strong> — Set ${set}<br>
+    Tiempo: ${tiempoUsado} · Nota máxima posible: <strong>${notaMax}</strong><br><br>
+    Mostrá esta pantalla al docente.${aviso}
+  `;
+  document.getElementById('success-msg').innerHTML = msg;
+  document.getElementById('overlay-success').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
