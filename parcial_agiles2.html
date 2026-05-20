@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parcial — Metodologías Ágiles</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap');
+
+  :root {
+    --bg: #e8e4df;
+    --surface: #f5f2ee;
+    --surface2: #ede9e3;
+    --border: #c9bfb5;
+    --accent: #8b3a52;
+    --accent2: #c4647a;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --text: #2c1a20;
+    --text2: #7a5c65;
+    --text3: #b09098;
+    --radius: 12px;
+    --font-display: 'DM Serif Display', serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-body: 'Lato', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    cursor: default;
+  }
+
+  /* ── LAYOUT ── */
+  .shell {
+    position: relative; z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* ── HEADER ── */
+  .exam-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .exam-title {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
+
+  .exam-title em { font-style: italic; color: var(--accent); }
+
+  .exam-meta {
+    font-size: 0.78rem;
+    color: var(--text2);
+    font-family: var(--font-mono);
+    margin-top: 0.4rem;
+    letter-spacing: 0.03em;
+  }
+
+  /* ── TIMER ── */
+  .timer-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .timer-display {
+    font-family: var(--font-mono);
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: 0.05em;
+    transition: color 0.4s;
+    min-width: 90px;
+    text-align: right;
+  }
+
+  .timer-display.warn { color: #b07800; }
+  .timer-display.danger { color: var(--danger); animation: pulse 0.8s infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
+
+  .timer-label {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    color: var(--text2);
+    text-align: right;
+  }
+
+  /* ── SALIDAS BADGE ── */
+  .salidas-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #fdecea;
+    color: var(--danger);
+    border: 1px solid #f5c6c2;
+    display: none;
+  }
+
+  .salidas-badge.visible { display: inline-block; }
+
+  /* ── ALUMNO BOX ── */
+  .alumno-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .alumno-box label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+  }
+
+  .alumno-box input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 4px 0;
+    outline: none;
+    transition: border-color 0.2s;
+    user-select: auto;
+    -webkit-user-select: auto;
+  }
+
+  .alumno-box input:focus { border-bottom-color: var(--accent); }
+
+  .set-badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: #f5eaed;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  /* ── PREGUNTAS ── */
+  .preguntas { display: flex; flex-direction: column; gap: 1.25rem; }
+
+  .pregunta-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .pregunta-card:focus-within {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(139,58,82,0.1);
+  }
+
+  .pq-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1rem;
+  }
+
+  .pq-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: #f5eaed;
+    border: 1px solid #ddb8c2;
+    border-radius: 6px;
+    padding: 3px 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .pq-text {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.55;
+    pointer-events: none;
+  }
+
+  .pq-answer {
+    width: 100%;
+    min-height: 110px;
+    background: var(--surface2);
+    border: none;
+    border-top: 1px solid var(--border);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.93rem;
+    line-height: 1.65;
+    padding: 1rem 1.5rem;
+    resize: vertical;
+    outline: none;
+    transition: background 0.2s;
+    user-select: auto;
+    -webkit-user-select: auto;
+    display: block;
+  }
+
+  .pq-answer:focus { background: #e8e2db; }
+  .pq-answer::placeholder { color: var(--text3); font-style: italic; }
+
+  .pq-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 6px 1.5rem 10px;
+    background: var(--surface2);
+    border-top: 1px solid var(--border);
+  }
+
+  .char-count {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* ── SUBMIT ── */
+  .submit-section {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .submit-btn {
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.9rem 2.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .submit-btn:hover { background: #7a2f45; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,58,82,0.25); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .submit-note {
+    font-size: 0.75rem;
+    color: var(--text3);
+    font-family: var(--font-mono);
+    text-align: center;
+  }
+
+  /* ── OVERLAYS ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(232,228,223,0.97);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    z-index: 100;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .overlay.hidden { display: none; }
+  .overlay-icon { font-size: 4rem; }
+
+  .overlay-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--text);
+  }
+
+  .overlay-sub {
+    font-size: 1rem;
+    color: var(--text2);
+    max-width: 460px;
+    line-height: 1.75;
+  }
+
+  .overlay-btn {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    padding: 0.8rem 2rem;
+    border-radius: var(--radius);
+    border: 1px solid var(--accent);
+    background: transparent;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.06em;
+  }
+
+  .overlay-btn:hover { background: var(--accent); color: #fff; }
+
+  /* ── AVISO SALIDA ── */
+  .overlay-warning {
+    background: rgba(255,245,245,0.99);
+    border: 3px solid var(--danger);
+  }
+
+  .overlay-warning .overlay-title { color: var(--danger); font-size: 1.8rem; }
+  .overlay-warning .overlay-btn { border-color: var(--danger); color: var(--danger); }
+  .overlay-warning .overlay-btn:hover { background: var(--danger); color: #fff; }
+
+  /* ── SUCCESS ── */
+  .success-overlay .overlay-title { color: var(--success); }
+
+  /* ── DEVTOOLS ── */
+  #devtools-warning {
+    display: none;
+    position: fixed; inset: 0;
+    background: #fff0f0;
+    color: var(--danger);
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    text-align: center;
+    padding: 2rem;
+    border: 4px solid var(--danger);
+  }
+</style>
+</head>
+<body>
+
+<!-- DevTools warning -->
+<div id="devtools-warning" style="display:none;position:fixed;inset:0;background:#fff0f0;color:#c0392b;font-family:monospace;font-size:1.1rem;align-items:center;justify-content:center;z-index:9999;text-align:center;padding:2rem;flex-direction:column;gap:1rem;">
+  <div style="font-size:3rem">⛔</div>
+  <div>Se detectó apertura de herramientas de desarrollo.<br>El examen ha sido bloqueado.<br>Notificá al docente.</div>
+</div>
+
+<!-- Overlay: inicio -->
+<div class="overlay" id="overlay-start">
+  <div class="overlay-icon">📋</div>
+  <div class="overlay-title">Parcial — Metodologías Ágiles</div>
+  <div class="overlay-sub">
+    Tenés <strong>20 minutos</strong> para completar el examen. El formulario se cierra automáticamente al terminar.<br><br>
+    <strong>⚠ Queda registrado si salís de esta ventana.</strong> Cada salida queda anotada y se incluye en el informe al docente.<br><br>
+    Está prohibido copiar, pegar y usar herramientas externas. Respondé con tus propias palabras.<br><br>
+    Ingresá tu nombre completo y presioná <em>Iniciar examen</em>.
+  </div>
+  <input type="text" id="input-nombre-start" placeholder="Nombre y apellido completo..."
+    style="width:100%;max-width:380px;padding:0.8rem 1rem;background:#f5f2ee;border:1.5px solid #c9bfb5;border-radius:10px;color:#2c1a20;font-family:'Lato',sans-serif;font-size:1rem;outline:none;user-select:auto;-webkit-user-select:auto;"
+    autocomplete="off" spellcheck="false">
+  <button class="overlay-btn" onclick="iniciarExamen()">Iniciar examen →</button>
+</div>
+
+<!-- Overlay: aviso primera salida -->
+<div class="overlay overlay-warning hidden" id="overlay-salida">
+  <div class="overlay-icon">⚠️</div>
+  <div class="overlay-title">Salida registrada</div>
+  <div class="overlay-sub">
+    Se detectó que abandonaste esta ventana durante el examen.<br><br>
+    <strong>Esta acción quedó registrada y será informada al docente.</strong><br><br>
+    Si volvés a salir, seguirá registrándose cada vez.
+  </div>
+  <button class="overlay-btn" onclick="cerrarAvisoSalida()">Entendido, continuar →</button>
+</div>
+
+<!-- Overlay: tiempo agotado -->
+<div class="overlay hidden" id="overlay-expired">
+  <div class="overlay-icon">⏱</div>
+  <div class="overlay-title">Tiempo agotado</div>
+  <div class="overlay-sub">
+    El tiempo del examen se terminó y el formulario fue cerrado automáticamente.<br>
+    Tus respuestas fueron registradas hasta este momento.
+  </div>
+</div>
+
+<!-- Overlay: éxito -->
+<div class="overlay hidden success-overlay" id="overlay-success">
+  <div class="overlay-icon">✅</div>
+  <div class="overlay-title">Examen enviado</div>
+  <div class="overlay-sub" id="success-msg"></div>
+</div>
+
+<!-- Contenido principal -->
+<div class="shell">
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-fill"></div>
+  </div>
+
+  <div class="exam-header">
+    <div>
+      <div class="exam-title">Metodologías<br><em>Ágiles</em></div>
+      <div class="exam-meta" id="meta-line">PRIMER PARCIAL</div>
+    </div>
+    <div class="timer-block">
+      <div class="timer-display" id="timer-display">20:00</div>
+      <div class="timer-label" id="timer-label">tiempo restante</div>
+      <span class="salidas-badge" id="salidas-badge">0 salidas</span>
+    </div>
+  </div>
+
+  <div class="alumno-box">
+    <label>ALUMNO</label>
+    <input type="text" id="nombre-display" readonly style="cursor:default;">
+    <span class="set-badge" id="set-badge-display">SET —</span>
+  </div>
+
+  <div class="preguntas" id="preguntas-container"></div>
+
+  <div class="submit-section">
+    <button class="submit-btn" id="submit-btn" onclick="enviarExamen()">Enviar respuestas</button>
+    <div class="submit-note">Una vez enviado no podrás modificar tus respuestas.</div>
+  </div>
+
+</div>
+
+<script>
+// ── SETS DE PREGUNTAS ──────────────────────────────────────────────
+const PREGUNTA_DEBATE = "En el debate de clase analizamos situaciones en las que un actor con poder jerárquico presiona para cambiar las prioridades de un equipo ágil. ¿Cómo creés que debería manejarse esa tensión? ¿Qué riesgos identificás y qué mecanismos propondrías para proteger la integridad del proceso ágil?";
+
+const SETS = {
+  A: [
+    { texto: "Describa los cuatro valores del Manifiesto Ágil." },
+    { texto: "Kanban: ¿Qué es WIP? ¿Qué ventajas nos da?" },
+    { texto: "Scrum: Defina el rol del Scrum Master." },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante un Product Owner? Justifique." },
+    { texto: "¿Qué es una historia de usuario? ¿Cómo está compuesta? ¿Para qué sirven?" },
+    { texto: PREGUNTA_DEBATE },
+  ],
+  B: [
+    { texto: "Describa el ciclo de vida del desarrollo de software, indicando las etapas clave y su importancia en el proceso." },
+    { texto: "Kanban: ¿Qué es Lead Time y Cycle Time?" },
+    { texto: "Scrum: Defina el rol del Product Owner." },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante el Agile Team? Justifique." },
+    { texto: "¿Qué son los puntos de historia? ¿Para qué sirven? ¿Cómo los utilizamos en un Planning Poker?" },
+    { texto: PREGUNTA_DEBATE },
+  ]
+};
+
+// ── ESTADO ────────────────────────────────────────────────────────
+const TOTAL_SECS = 20 * 60;
+let timerInterval = null;
+let secondsLeft = TOTAL_SECS;
+let examStarted = false;
+let examClosed = false;
+let currentSet = null;
+let charCounts = [0,0,0,0,0,0];
+
+// Registro de salidas
+let salidasCount = 0;
+let salidasLog = []; // { vez, minuto, segundo }
+let primeraSalidaMostrada = false;
+let avisoPendiente = false;
+
+// ── ANTI-CHEAT ────────────────────────────────────────────────────
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('copy', e => { if(examStarted) e.preventDefault(); });
+document.addEventListener('cut',  e => { if(examStarted) e.preventDefault(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'F12') { e.preventDefault(); return; }
+  if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); return; }
+  if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return; }
+  if (e.key === 'PrintScreen') { e.preventDefault(); navigator.clipboard?.writeText('').catch(()=>{}); }
+});
+
+// DevTools detection
+let devtoolsOpen = false;
+setInterval(() => {
+  const wDiff = window.outerWidth - window.innerWidth > 160;
+  const hDiff = window.outerHeight - window.innerHeight > 160;
+  if ((wDiff || hDiff) && !devtoolsOpen && examStarted) {
+    devtoolsOpen = true;
+    document.getElementById('devtools-warning').style.display = 'flex';
+    closeExam();
+  }
+}, 1000);
+
+// ── DETECCIÓN DE SALIDA DE VENTANA ───────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (!examStarted || examClosed) return;
+  if (document.hidden) registrarSalida();
+});
+
+window.addEventListener('blur', () => {
+  if (!examStarted || examClosed) return;
+  registrarSalida();
+});
+
+function registrarSalida() {
+  if (avisoPendiente) return; // evitar doble registro por ambos eventos
+  avisoPendiente = true;
+  setTimeout(() => { avisoPendiente = false; }, 1000);
+
+  salidasCount++;
+  const elapsed = TOTAL_SECS - secondsLeft;
+  const min = Math.floor(elapsed / 60);
+  const sec = elapsed % 60;
+  salidasLog.push({ vez: salidasCount, minuto: min, segundo: sec });
+
+  // Actualizar badge
+  const badge = document.getElementById('salidas-badge');
+  badge.textContent = salidasCount + (salidasCount === 1 ? ' salida' : ' salidas');
+  badge.classList.add('visible');
+
+  // Mostrar aviso intimidatorio la primera vez
+  if (!primeraSalidaMostrada) {
+    primeraSalidaMostrada = true;
+    document.getElementById('overlay-salida').classList.remove('hidden');
+  }
+}
+
+function cerrarAvisoSalida() {
+  document.getElementById('overlay-salida').classList.add('hidden');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
+function iniciarExamen() {
+  const nombre = document.getElementById('input-nombre-start').value.trim();
+  if (!nombre) { alert('Ingresá tu nombre completo para continuar.'); return; }
+
+  currentSet = Math.random() < 0.5 ? 'A' : 'B';
+  examStarted = true;
+
+  document.getElementById('overlay-start').classList.add('hidden');
+  document.getElementById('nombre-display').value = nombre;
+  document.getElementById('set-badge-display').textContent = 'SET ' + currentSet;
+  document.getElementById('meta-line').textContent = `PRIMER PARCIAL · SET ${currentSet}`;
+
+  renderPreguntas();
+  startTimer();
+}
+
+// ── RENDER PREGUNTAS ──────────────────────────────────────────────
+function renderPreguntas() {
+  const container = document.getElementById('preguntas-container');
+  const pqs = SETS[currentSet];
+  container.innerHTML = '';
+  pqs.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'pregunta-card';
+    card.innerHTML = `
+      <div class="pq-top">
+        <span class="pq-num">P${i+1}</span>
+        <div class="pq-text">${p.texto}</div>
+      </div>
+      <textarea class="pq-answer" id="ans-${i}"
+        placeholder="Escribí tu respuesta acá..."
+        spellcheck="true" autocomplete="off" rows="5"></textarea>
+      <div class="pq-footer">
+        <span class="char-count" id="cc-${i}">0 caracteres</span>
+      </div>`;
+    container.appendChild(card);
+
+    const ta = card.querySelector(`#ans-${i}`);
+    ta.addEventListener('paste', e => e.preventDefault());
+    ta.addEventListener('drop',  e => e.preventDefault());
+    ta.addEventListener('input', () => {
+      charCounts[i] = ta.value.length;
+      document.getElementById(`cc-${i}`).textContent = ta.value.length + ' caracteres';
+      updateProgress();
+    });
+  });
+}
+
+// ── PROGRESS ─────────────────────────────────────────────────────
+function updateProgress() {
+  const total = charCounts.reduce((a,b)=>a+b,0);
+  const pct = Math.min(100, Math.round(total / 600 * 100));
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+// ── TIMER ─────────────────────────────────────────────────────────
+function startTimer() {
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsLeft--;
+    updateTimerDisplay();
+    if (secondsLeft <= 0) { clearInterval(timerInterval); autoCloseExam(); }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  const el = document.getElementById('timer-display');
+  el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+  el.className = 'timer-display';
+  if (secondsLeft <= 60)      el.classList.add('danger');
+  else if (secondsLeft <= 5*60) el.classList.add('warn');
+}
+
+// ── CERRAR EXAMEN ─────────────────────────────────────────────────
+function autoCloseExam() {
+  if (examClosed) return;
+  examClosed = true;
+  closeExam();
+  document.getElementById('overlay-expired').classList.remove('hidden');
+}
+
+function closeExam() {
+  examClosed = true;
+  clearInterval(timerInterval);
+  document.querySelectorAll('.pq-answer').forEach(ta => {
+    ta.disabled = true;
+    ta.style.opacity = '0.5';
+  });
+  document.getElementById('submit-btn').disabled = true;
+}
+
+// ── ENVIAR ────────────────────────────────────────────────────────
+async function enviarExamen() {
+  if (examClosed) return;
+  const nombre = document.getElementById('nombre-display').value;
+  const pqs = SETS[currentSet];
+  const elapsed = TOTAL_SECS - secondsLeft;
+  const tiempoUsado = Math.floor(elapsed/60) + 'min ' + (elapsed%60) + 's';
+
+  // Armar log de salidas
+  const logSalidas = salidasCount === 0
+    ? 'Sin salidas registradas'
+    : salidasLog.map(s => `Salida ${s.vez}: min ${s.minuto}:${String(s.segundo).padStart(2,'0')}`).join(' | ');
+
+  closeExam();
+
+  const payload = {
+    alumno: nombre,
+    set: currentSet,
+    tiempo_usado: tiempoUsado,
+    salidas_de_ventana: salidasCount,
+    detalle_salidas: logSalidas,
+  };
+
+  pqs.forEach((p, i) => {
+    payload[`P${i+1} — ${p.texto.substring(0,60)}...`] = document.getElementById('ans-'+i).value.trim() || '(sin respuesta)';
+  });
+
+  document.getElementById('submit-btn').textContent = 'Enviando...';
+
+  try {
+    const res = await fetch('https://formspree.io/f/xkoenyqb', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    mostrarExito(nombre, currentSet, tiempoUsado, salidasCount, !res.ok);
+  } catch(e) {
+    mostrarExito(nombre, currentSet, tiempoUsado, salidasCount, true);
+  }
+}
+
+function mostrarExito(nombre, set, tiempoUsado, salidas, conError) {
+  const avisoSalidas = salidas > 0
+    ? `<br><span style="color:#c0392b;font-size:0.85rem">⚠ ${salidas} salida${salidas>1?'s':''} de ventana registrada${salidas>1?'s':''}.</span>`
+    : '';
+  const avisoError = conError
+    ? '<br><span style="color:#b07800;font-size:0.85rem">⚠ Error al enviar. Tomá captura y enviásela al docente.</span>'
+    : '';
+  document.getElementById('success-msg').innerHTML = `
+    <strong>${nombre}</strong> — Set ${set}<br>
+    Tiempo utilizado: ${tiempoUsado}${avisoSalidas}${avisoError}<br><br>
+    Mostrá esta pantalla al docente.
+  `;
+  document.getElementById('overlay-success').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
