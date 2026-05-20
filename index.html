@@ -8,19 +8,17 @@
   @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Lato:wght@300;400;700&display=swap');
 
   :root {
-    --bg: #0f1117;
-    --surface: #161b27;
-    --surface2: #1e2535;
-    --border: #2a3347;
-    --accent: #4f8ef7;
-    --accent2: #f7c948;
-    --danger: #f75a5a;
-    --success: #4fcf8e;
-    --text: #e8eaf0;
-    --text2: #8a94aa;
-    --text3: #4a5568;
-    --star-on: #f7c948;
-    --star-off: #2a3347;
+    --bg: #e8e4df;
+    --surface: #f5f2ee;
+    --surface2: #ede9e3;
+    --border: #c9bfb5;
+    --accent: #8b3a52;
+    --accent2: #c4647a;
+    --danger: #c0392b;
+    --success: #27ae60;
+    --text: #2c1a20;
+    --text2: #7a5c65;
+    --text3: #b09098;
     --radius: 12px;
     --font-display: 'DM Serif Display', serif;
     --font-mono: 'DM Mono', monospace;
@@ -28,7 +26,6 @@
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   html { font-size: 16px; }
 
   body {
@@ -40,15 +37,6 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     cursor: default;
-  }
-
-  /* ── NOISE TEXTURE ── */
-  body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none; z-index: 0;
-    opacity: 0.5;
   }
 
   /* ── LAYOUT ── */
@@ -67,7 +55,7 @@
     gap: 1.5rem;
     margin-bottom: 2.5rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
   }
 
   .exam-title {
@@ -78,10 +66,7 @@
     letter-spacing: -0.02em;
   }
 
-  .exam-title em {
-    font-style: italic;
-    color: var(--accent);
-  }
+  .exam-title em { font-style: italic; color: var(--accent); }
 
   .exam-meta {
     font-size: 0.78rem;
@@ -91,12 +76,12 @@
     letter-spacing: 0.03em;
   }
 
-  /* ── TIMER BLOCK ── */
+  /* ── TIMER ── */
   .timer-block {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    gap: 0.4rem;
+    gap: 0.3rem;
     flex-shrink: 0;
   }
 
@@ -111,37 +96,32 @@
     text-align: right;
   }
 
-  .timer-display.warn { color: var(--accent2); }
+  .timer-display.warn { color: #b07800; }
   .timer-display.danger { color: var(--danger); animation: pulse 0.8s infinite alternate; }
+  @keyframes pulse { from { opacity: 1; } to { opacity: 0.4; } }
 
-  @keyframes pulse { from { opacity: 1; } to { opacity: 0.5; } }
-
-  .stars {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-  }
-
-  .star {
-    font-size: 1.2rem;
-    transition: all 0.4s cubic-bezier(.34,1.56,.64,1);
-    filter: drop-shadow(0 0 6px var(--star-on));
-  }
-
-  .star.off {
-    filter: none;
-    opacity: 0.25;
-  }
-
-  .star-label {
+  .timer-label {
     font-size: 0.72rem;
     font-family: var(--font-mono);
     color: var(--text2);
-    margin-top: 2px;
     text-align: right;
   }
 
-  /* ── ALUMNO INPUT ── */
+  /* ── SALIDAS BADGE ── */
+  .salidas-badge {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: #fdecea;
+    color: var(--danger);
+    border: 1px solid #f5c6c2;
+    display: none;
+  }
+
+  .salidas-badge.visible { display: inline-block; }
+
+  /* ── ALUMNO BOX ── */
   .alumno-box {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -184,7 +164,7 @@
     font-size: 0.75rem;
     padding: 4px 10px;
     border-radius: 20px;
-    background: var(--surface2);
+    background: #f5eaed;
     color: var(--accent);
     border: 1px solid var(--accent);
     letter-spacing: 0.05em;
@@ -204,7 +184,7 @@
 
   .pregunta-card:focus-within {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(79,142,247,0.12);
+    box-shadow: 0 0 0 3px rgba(139,58,82,0.1);
   }
 
   .pq-top {
@@ -218,8 +198,8 @@
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--accent);
-    background: rgba(79,142,247,0.1);
-    border: 1px solid rgba(79,142,247,0.25);
+    background: #f5eaed;
+    border: 1px solid #ddb8c2;
     border-radius: 6px;
     padding: 3px 8px;
     white-space: nowrap;
@@ -234,15 +214,6 @@
     color: var(--text);
     line-height: 1.55;
     pointer-events: none;
-  }
-
-  .pq-pts {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text2);
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-top: 4px;
   }
 
   .pq-answer {
@@ -264,10 +235,9 @@
     display: block;
   }
 
-  .pq-answer:focus { background: #1a2133; }
+  .pq-answer:focus { background: #e8e2db; }
   .pq-answer::placeholder { color: var(--text3); font-style: italic; }
 
-  /* ── CHAR COUNTER ── */
   .pq-footer {
     display: flex;
     justify-content: flex-end;
@@ -280,6 +250,24 @@
     font-family: var(--font-mono);
     font-size: 0.7rem;
     color: var(--text3);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    width: 100%;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    width: 0%;
   }
 
   /* ── SUBMIT ── */
@@ -307,7 +295,7 @@
     max-width: 320px;
   }
 
-  .submit-btn:hover { background: #3a7de8; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(79,142,247,0.3); }
+  .submit-btn:hover { background: #7a2f45; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(139,58,82,0.25); }
   .submit-btn:active { transform: translateY(0); }
   .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
@@ -318,10 +306,10 @@
     text-align: center;
   }
 
-  /* ── OVERLAY STATES ── */
+  /* ── OVERLAYS ── */
   .overlay {
     position: fixed; inset: 0;
-    background: rgba(10,12,18,0.97);
+    background: rgba(232,228,223,0.97);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -333,7 +321,6 @@
   }
 
   .overlay.hidden { display: none; }
-
   .overlay-icon { font-size: 4rem; }
 
   .overlay-title {
@@ -345,8 +332,8 @@
   .overlay-sub {
     font-size: 1rem;
     color: var(--text2);
-    max-width: 420px;
-    line-height: 1.7;
+    max-width: 460px;
+    line-height: 1.75;
   }
 
   .overlay-btn {
@@ -364,82 +351,73 @@
 
   .overlay-btn:hover { background: var(--accent); color: #fff; }
 
-  /* ── CLOSED STATE ── */
-  .closed-banner {
-    background: rgba(247,90,90,0.1);
-    border: 1px solid rgba(247,90,90,0.3);
-    border-radius: var(--radius);
-    padding: 1.25rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    color: var(--danger);
-    text-align: center;
-    display: none;
+  /* ── AVISO SALIDA ── */
+  .overlay-warning {
+    background: rgba(255,245,245,0.99);
+    border: 3px solid var(--danger);
   }
+
+  .overlay-warning .overlay-title { color: var(--danger); font-size: 1.8rem; }
+  .overlay-warning .overlay-btn { border-color: var(--danger); color: var(--danger); }
+  .overlay-warning .overlay-btn:hover { background: var(--danger); color: #fff; }
 
   /* ── SUCCESS ── */
-  .success-overlay { background: rgba(10,12,18,0.98); }
   .success-overlay .overlay-title { color: var(--success); }
 
-  /* ── PROGRESS BAR ── */
-  .progress-bar-wrap {
-    width: 100%;
-    height: 3px;
-    background: var(--border);
-    border-radius: 2px;
-    margin-bottom: 2rem;
-    overflow: hidden;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent), #7eb8f7);
-    border-radius: 2px;
-    transition: width 0.5s ease;
-    width: 0%;
-  }
-
-  /* ── DEVTOOLS WARNING ── */
+  /* ── DEVTOOLS ── */
   #devtools-warning {
     display: none;
-    position: fixed;
-    inset: 0;
-    background: #000;
+    position: fixed; inset: 0;
+    background: #fff0f0;
     color: var(--danger);
     font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     align-items: center;
     justify-content: center;
     z-index: 9999;
     text-align: center;
     padding: 2rem;
+    border: 4px solid var(--danger);
   }
 </style>
 </head>
 <body>
 
 <!-- DevTools warning -->
-<div id="devtools-warning">
-  ⚠ Se detectó apertura de herramientas de desarrollo.<br>
-  El examen ha sido bloqueado. Notificá al docente.
+<div id="devtools-warning" style="display:none;position:fixed;inset:0;background:#fff0f0;color:#c0392b;font-family:monospace;font-size:1.1rem;align-items:center;justify-content:center;z-index:9999;text-align:center;padding:2rem;flex-direction:column;gap:1rem;">
+  <div style="font-size:3rem">⛔</div>
+  <div>Se detectó apertura de herramientas de desarrollo.<br>El examen ha sido bloqueado.<br>Notificá al docente.</div>
 </div>
 
-<!-- Start overlay -->
+<!-- Overlay: inicio -->
 <div class="overlay" id="overlay-start">
   <div class="overlay-icon">📋</div>
   <div class="overlay-title">Parcial — Metodologías Ágiles</div>
   <div class="overlay-sub">
-    Tenés <strong>15 minutos</strong> desde que iniciás. El formulario se cierra automáticamente al terminar el tiempo.<br><br>
-    Está prohibido copiar, pegar y capturar pantalla. Respondé con tus propias palabras.<br><br>
+    Tenés <strong>20 minutos</strong> para completar el examen. El formulario se cierra automáticamente al terminar.<br><br>
+    <strong>⚠ Queda registrado si salís de esta ventana.</strong> Cada salida queda anotada y se incluye en el informe al docente.<br><br>
+    Está prohibido copiar, pegar y usar herramientas externas. Respondé con tus propias palabras.<br><br>
     Ingresá tu nombre completo y presioná <em>Iniciar examen</em>.
   </div>
   <input type="text" id="input-nombre-start" placeholder="Nombre y apellido completo..."
-    style="width:100%;max-width:380px;padding:0.8rem 1rem;background:#1e2535;border:1px solid #2a3347;border-radius:10px;color:#e8eaf0;font-family:'Lato',sans-serif;font-size:1rem;outline:none;user-select:auto;-webkit-user-select:auto;"
+    style="width:100%;max-width:380px;padding:0.8rem 1rem;background:#f5f2ee;border:1.5px solid #c9bfb5;border-radius:10px;color:#2c1a20;font-family:'Lato',sans-serif;font-size:1rem;outline:none;user-select:auto;-webkit-user-select:auto;"
     autocomplete="off" spellcheck="false">
   <button class="overlay-btn" onclick="iniciarExamen()">Iniciar examen →</button>
 </div>
 
-<!-- Expired overlay -->
+<!-- Overlay: aviso primera salida -->
+<div class="overlay overlay-warning hidden" id="overlay-salida">
+  <div class="overlay-icon">⚠️</div>
+  <div class="overlay-title">Salida registrada</div>
+  <div class="overlay-sub">
+    Se detectó que abandonaste esta ventana durante el examen.<br><br>
+    <strong>Esta acción quedó registrada y será informada al docente.</strong><br><br>
+    Si volvés a salir, seguirá registrándose cada vez.
+  </div>
+  <button class="overlay-btn" onclick="cerrarAvisoSalida()">Entendido, continuar →</button>
+</div>
+
+<!-- Overlay: tiempo agotado -->
 <div class="overlay hidden" id="overlay-expired">
   <div class="overlay-icon">⏱</div>
   <div class="overlay-title">Tiempo agotado</div>
@@ -449,14 +427,14 @@
   </div>
 </div>
 
-<!-- Success overlay -->
+<!-- Overlay: éxito -->
 <div class="overlay hidden success-overlay" id="overlay-success">
   <div class="overlay-icon">✅</div>
   <div class="overlay-title">Examen enviado</div>
-  <div class="overlay-sub" id="success-msg">Tus respuestas fueron registradas correctamente.</div>
+  <div class="overlay-sub" id="success-msg"></div>
 </div>
 
-<!-- Main content -->
+<!-- Contenido principal -->
 <div class="shell">
 
   <div class="progress-bar-wrap">
@@ -466,16 +444,12 @@
   <div class="exam-header">
     <div>
       <div class="exam-title">Metodologías<br><em>Ágiles</em></div>
-      <div class="exam-meta" id="meta-line">PRIMER PARCIAL · <span id="set-label">—</span></div>
+      <div class="exam-meta" id="meta-line">PRIMER PARCIAL</div>
     </div>
     <div class="timer-block">
-      <div class="timer-display" id="timer-display">15:00</div>
-      <div class="stars" id="stars-display">
-        <span class="star" id="s1">⭐</span>
-        <span class="star" id="s2">⭐</span>
-        <span class="star" id="s3">⭐</span>
-      </div>
-      <div class="star-label" id="star-label">Nota máxima: 10</div>
+      <div class="timer-display" id="timer-display">20:00</div>
+      <div class="timer-label" id="timer-label">tiempo restante</div>
+      <span class="salidas-badge" id="salidas-badge">0 salidas</span>
     </div>
   </div>
 
@@ -495,56 +469,59 @@
 </div>
 
 <script>
-// ── PREGUNTAS ──────────────────────────────────────────────────────
+// ── SETS DE PREGUNTAS ──────────────────────────────────────────────
+const PREGUNTA_DEBATE = "En el debate de clase analizamos situaciones en las que un actor con poder jerárquico presiona para cambiar las prioridades de un equipo ágil. ¿Cómo creés que debería manejarse esa tensión? ¿Qué riesgos identificás y qué mecanismos propondrías para proteger la integridad del proceso ágil?";
+
 const SETS = {
   A: [
-    { texto: "Describa los cuatro valores del Manifiesto Ágil.", pts: 2 },
-    { texto: "Kanban: ¿Qué es WIP? ¿Qué ventajas nos da?", pts: 1 },
-    { texto: "Scrum: Defina el rol del Scrum Master.", pts: 2 },
-    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante un Product Owner? Justifique.", pts: 3 },
-    { texto: "¿Qué es una historia de usuario? ¿Cómo está compuesta? ¿Para qué sirven?", pts: 2 },
+    { texto: "Describa los cuatro valores del Manifiesto Ágil." },
+    { texto: "Kanban: ¿Qué es WIP? ¿Qué ventajas nos da?" },
+    { texto: "Scrum: Defina el rol del Scrum Master." },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante un Product Owner? Justifique." },
+    { texto: "¿Qué es una historia de usuario? ¿Cómo está compuesta? ¿Para qué sirven?" },
+    { texto: PREGUNTA_DEBATE },
   ],
   B: [
-    { texto: "Describa el ciclo de vida del desarrollo de software, indicando las etapas clave y su importancia en el proceso.", pts: 2 },
-    { texto: "Kanban: ¿Qué es Lead Time y Cycle Time?", pts: 1 },
-    { texto: "Scrum: Defina el rol del Product Owner.", pts: 2 },
-    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante el Agile Team? Justifique.", pts: 3 },
-    { texto: "¿Qué son los puntos de historia? ¿Para qué sirven? ¿Cómo los utilizamos en un Planning Poker?", pts: 2 },
+    { texto: "Describa el ciclo de vida del desarrollo de software, indicando las etapas clave y su importancia en el proceso." },
+    { texto: "Kanban: ¿Qué es Lead Time y Cycle Time?" },
+    { texto: "Scrum: Defina el rol del Product Owner." },
+    { texto: "Según su opinión, ¿cuál es la ceremonia en la que es más importante el Agile Team? Justifique." },
+    { texto: "¿Qué son los puntos de historia? ¿Para qué sirven? ¿Cómo los utilizamos en un Planning Poker?" },
+    { texto: PREGUNTA_DEBATE },
   ]
 };
 
-// ── STATE ──────────────────────────────────────────────────────────
-const TOTAL_SECS = 15 * 60;
-const STAR3_SECS = 10 * 60; // >10min left → 3 stars (≤5min elapsed)
-const STAR2_SECS = 5 * 60;  // >5min left  → 2 stars (≤10min elapsed)
-// ≤5min left → 1 star
-
+// ── ESTADO ────────────────────────────────────────────────────────
+const TOTAL_SECS = 20 * 60;
 let timerInterval = null;
 let secondsLeft = TOTAL_SECS;
 let examStarted = false;
 let examClosed = false;
 let currentSet = null;
-let charCounts = [0,0,0,0,0];
+let charCounts = [0,0,0,0,0,0];
 
-// ── ANTI-CHEAT ─────────────────────────────────────────────────────
+// Registro de salidas
+let salidasCount = 0;
+let salidasLog = []; // { vez, minuto, segundo }
+let primeraSalidaMostrada = false;
+let avisoPendiente = false;
+
+// ── ANTI-CHEAT ────────────────────────────────────────────────────
 document.addEventListener('contextmenu', e => e.preventDefault());
 document.addEventListener('copy', e => { if(examStarted) e.preventDefault(); });
-document.addEventListener('cut', e => { if(examStarted) e.preventDefault(); });
+document.addEventListener('cut',  e => { if(examStarted) e.preventDefault(); });
 document.addEventListener('keydown', e => {
-  // Block F12, Ctrl+Shift+I/J/C/U, Ctrl+U
   if (e.key === 'F12') { e.preventDefault(); return; }
   if (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) { e.preventDefault(); return; }
   if (e.ctrlKey && e.key.toUpperCase() === 'U') { e.preventDefault(); return; }
-  // Block PrintScreen (best effort)
   if (e.key === 'PrintScreen') { e.preventDefault(); navigator.clipboard?.writeText('').catch(()=>{}); }
 });
 
-// DevTools size detection
+// DevTools detection
 let devtoolsOpen = false;
-const threshold = 160;
 setInterval(() => {
-  const wDiff = window.outerWidth - window.innerWidth > threshold;
-  const hDiff = window.outerHeight - window.innerHeight > threshold;
+  const wDiff = window.outerWidth - window.innerWidth > 160;
+  const hDiff = window.outerHeight - window.innerHeight > 160;
   if ((wDiff || hDiff) && !devtoolsOpen && examStarted) {
     devtoolsOpen = true;
     document.getElementById('devtools-warning').style.display = 'flex';
@@ -552,7 +529,45 @@ setInterval(() => {
   }
 }, 1000);
 
-// ── INIT ───────────────────────────────────────────────────────────
+// ── DETECCIÓN DE SALIDA DE VENTANA ───────────────────────────────
+document.addEventListener('visibilitychange', () => {
+  if (!examStarted || examClosed) return;
+  if (document.hidden) registrarSalida();
+});
+
+window.addEventListener('blur', () => {
+  if (!examStarted || examClosed) return;
+  registrarSalida();
+});
+
+function registrarSalida() {
+  if (avisoPendiente) return; // evitar doble registro por ambos eventos
+  avisoPendiente = true;
+  setTimeout(() => { avisoPendiente = false; }, 1000);
+
+  salidasCount++;
+  const elapsed = TOTAL_SECS - secondsLeft;
+  const min = Math.floor(elapsed / 60);
+  const sec = elapsed % 60;
+  salidasLog.push({ vez: salidasCount, minuto: min, segundo: sec });
+
+  // Actualizar badge
+  const badge = document.getElementById('salidas-badge');
+  badge.textContent = salidasCount + (salidasCount === 1 ? ' salida' : ' salidas');
+  badge.classList.add('visible');
+
+  // Mostrar aviso intimidatorio la primera vez
+  if (!primeraSalidaMostrada) {
+    primeraSalidaMostrada = true;
+    document.getElementById('overlay-salida').classList.remove('hidden');
+  }
+}
+
+function cerrarAvisoSalida() {
+  document.getElementById('overlay-salida').classList.add('hidden');
+}
+
+// ── INIT ──────────────────────────────────────────────────────────
 function iniciarExamen() {
   const nombre = document.getElementById('input-nombre-start').value.trim();
   if (!nombre) { alert('Ingresá tu nombre completo para continuar.'); return; }
@@ -563,14 +578,13 @@ function iniciarExamen() {
   document.getElementById('overlay-start').classList.add('hidden');
   document.getElementById('nombre-display').value = nombre;
   document.getElementById('set-badge-display').textContent = 'SET ' + currentSet;
-  document.getElementById('set-label').textContent = 'SET ' + currentSet;
   document.getElementById('meta-line').textContent = `PRIMER PARCIAL · SET ${currentSet}`;
 
   renderPreguntas();
   startTimer();
 }
 
-// ── RENDER PREGUNTAS ───────────────────────────────────────────────
+// ── RENDER PREGUNTAS ──────────────────────────────────────────────
 function renderPreguntas() {
   const container = document.getElementById('preguntas-container');
   const pqs = SETS[currentSet];
@@ -582,30 +596,18 @@ function renderPreguntas() {
       <div class="pq-top">
         <span class="pq-num">P${i+1}</span>
         <div class="pq-text">${p.texto}</div>
-        <span class="pq-pts">${p.pts} pt${p.pts>1?'s':''}</span>
       </div>
-      <textarea
-        class="pq-answer"
-        id="ans-${i}"
+      <textarea class="pq-answer" id="ans-${i}"
         placeholder="Escribí tu respuesta acá..."
-        spellcheck="true"
-        autocomplete="off"
-        rows="5"
-      ></textarea>
+        spellcheck="true" autocomplete="off" rows="5"></textarea>
       <div class="pq-footer">
         <span class="char-count" id="cc-${i}">0 caracteres</span>
       </div>`;
     container.appendChild(card);
 
     const ta = card.querySelector(`#ans-${i}`);
-
-    // Block paste
-    ta.addEventListener('paste', e => { e.preventDefault(); });
-
-    // Block drag-drop text
-    ta.addEventListener('drop', e => { e.preventDefault(); });
-
-    // Char counter + progress
+    ta.addEventListener('paste', e => e.preventDefault());
+    ta.addEventListener('drop',  e => e.preventDefault());
     ta.addEventListener('input', () => {
       charCounts[i] = ta.value.length;
       document.getElementById(`cc-${i}`).textContent = ta.value.length + ' caracteres';
@@ -614,23 +616,20 @@ function renderPreguntas() {
   });
 }
 
-// ── PROGRESS ───────────────────────────────────────────────────────
+// ── PROGRESS ─────────────────────────────────────────────────────
 function updateProgress() {
   const total = charCounts.reduce((a,b)=>a+b,0);
-  const pct = Math.min(100, Math.round(total / 500 * 100));
+  const pct = Math.min(100, Math.round(total / 600 * 100));
   document.getElementById('progress-fill').style.width = pct + '%';
 }
 
-// ── TIMER ──────────────────────────────────────────────────────────
+// ── TIMER ─────────────────────────────────────────────────────────
 function startTimer() {
   updateTimerDisplay();
   timerInterval = setInterval(() => {
     secondsLeft--;
     updateTimerDisplay();
-    if (secondsLeft <= 0) {
-      clearInterval(timerInterval);
-      autoCloseExam();
-    }
+    if (secondsLeft <= 0) { clearInterval(timerInterval); autoCloseExam(); }
   }, 1000);
 }
 
@@ -639,39 +638,12 @@ function updateTimerDisplay() {
   const s = secondsLeft % 60;
   const el = document.getElementById('timer-display');
   el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
-
-  // Color states
   el.className = 'timer-display';
-  if (secondsLeft <= 60) el.classList.add('danger');
-  else if (secondsLeft <= STAR2_SECS) el.classList.add('warn');
-
-  updateStars();
+  if (secondsLeft <= 60)      el.classList.add('danger');
+  else if (secondsLeft <= 5*60) el.classList.add('warn');
 }
 
-function updateStars() {
-  const elapsed = TOTAL_SECS - secondsLeft;
-  let stars, label;
-
-  if (elapsed <= 5 * 60) {
-    stars = 3; label = 'Nota máxima: 10 ⭐⭐⭐';
-  } else if (elapsed <= 10 * 60) {
-    stars = 2; label = 'Nota máxima: 9 ⭐⭐';
-  } else if (elapsed <= 15 * 60) {
-    stars = 1; label = 'Nota máxima: 8 ⭐';
-  } else {
-    stars = 0; label = 'Tiempo agotado';
-  }
-
-  ['s1','s2','s3'].forEach((id, i) => {
-    const el = document.getElementById(id);
-    if (i < stars) { el.classList.remove('off'); }
-    else { el.classList.add('off'); }
-  });
-
-  document.getElementById('star-label').textContent = label;
-}
-
-// ── CLOSE / SUBMIT ─────────────────────────────────────────────────
+// ── CERRAR EXAMEN ─────────────────────────────────────────────────
 function autoCloseExam() {
   if (examClosed) return;
   examClosed = true;
@@ -682,7 +654,6 @@ function autoCloseExam() {
 function closeExam() {
   examClosed = true;
   clearInterval(timerInterval);
-  // Disable all textareas
   document.querySelectorAll('.pq-answer').forEach(ta => {
     ta.disabled = true;
     ta.style.opacity = '0.5';
@@ -690,39 +661,34 @@ function closeExam() {
   document.getElementById('submit-btn').disabled = true;
 }
 
+// ── ENVIAR ────────────────────────────────────────────────────────
 async function enviarExamen() {
   if (examClosed) return;
   const nombre = document.getElementById('nombre-display').value;
   const pqs = SETS[currentSet];
-  const respuestas = pqs.map((p,i) => ({
-    pregunta: p.texto,
-    respuesta: document.getElementById('ans-'+i).value.trim()
-  }));
-
   const elapsed = TOTAL_SECS - secondsLeft;
-  let notaMax;
-  if (elapsed <= 5*60) notaMax = 10;
-  else if (elapsed <= 10*60) notaMax = 9;
-  else notaMax = 8;
-
   const tiempoUsado = Math.floor(elapsed/60) + 'min ' + (elapsed%60) + 's';
+
+  // Armar log de salidas
+  const logSalidas = salidasCount === 0
+    ? 'Sin salidas registradas'
+    : salidasLog.map(s => `Salida ${s.vez}: min ${s.minuto}:${String(s.segundo).padStart(2,'0')}`).join(' | ');
 
   closeExam();
 
-  // ── Build Formspree payload ──────────────────────────────────────
   const payload = {
     alumno: nombre,
     set: currentSet,
     tiempo_usado: tiempoUsado,
-    nota_maxima_posible: notaMax,
+    salidas_de_ventana: salidasCount,
+    detalle_salidas: logSalidas,
   };
-  respuestas.forEach((r, i) => {
-    payload[`P${i+1} — ${r.pregunta}`] = r.respuesta || '(sin respuesta)';
+
+  pqs.forEach((p, i) => {
+    payload[`P${i+1} — ${p.texto.substring(0,60)}...`] = document.getElementById('ans-'+i).value.trim() || '(sin respuesta)';
   });
 
-  // ── Show loading state ───────────────────────────────────────────
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Enviando...';
+  document.getElementById('submit-btn').textContent = 'Enviando...';
 
   try {
     const res = await fetch('https://formspree.io/f/xkoenyqb', {
@@ -730,29 +696,24 @@ async function enviarExamen() {
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify(payload)
     });
-
-    if (res.ok) {
-      mostrarExito(nombre, currentSet, tiempoUsado, notaMax);
-    } else {
-      // Formspree returned an error — still show success to student but flag it
-      mostrarExito(nombre, currentSet, tiempoUsado, notaMax, true);
-    }
+    mostrarExito(nombre, currentSet, tiempoUsado, salidasCount, !res.ok);
   } catch(e) {
-    // Network error — show success screen anyway so student isn't panicked
-    mostrarExito(nombre, currentSet, tiempoUsado, notaMax, true);
+    mostrarExito(nombre, currentSet, tiempoUsado, salidasCount, true);
   }
 }
 
-function mostrarExito(nombre, set, tiempoUsado, notaMax, conError = false) {
-  const aviso = conError
-    ? '<br><span style="color:#f7c948;font-size:0.85rem">⚠ Hubo un problema al enviar. Tomá captura de esta pantalla y enviásela al docente.</span>'
+function mostrarExito(nombre, set, tiempoUsado, salidas, conError) {
+  const avisoSalidas = salidas > 0
+    ? `<br><span style="color:#c0392b;font-size:0.85rem">⚠ ${salidas} salida${salidas>1?'s':''} de ventana registrada${salidas>1?'s':''}.</span>`
     : '';
-  const msg = `
+  const avisoError = conError
+    ? '<br><span style="color:#b07800;font-size:0.85rem">⚠ Error al enviar. Tomá captura y enviásela al docente.</span>'
+    : '';
+  document.getElementById('success-msg').innerHTML = `
     <strong>${nombre}</strong> — Set ${set}<br>
-    Tiempo: ${tiempoUsado} · Nota máxima posible: <strong>${notaMax}</strong><br><br>
-    Mostrá esta pantalla al docente.${aviso}
+    Tiempo utilizado: ${tiempoUsado}${avisoSalidas}${avisoError}<br><br>
+    Mostrá esta pantalla al docente.
   `;
-  document.getElementById('success-msg').innerHTML = msg;
   document.getElementById('overlay-success').classList.remove('hidden');
 }
 </script>
