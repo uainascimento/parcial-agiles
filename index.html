@@ -394,7 +394,7 @@
   <div class="overlay-icon">📋</div>
   <div class="overlay-title">Parcial — Metodologías Ágiles</div>
   <div class="overlay-sub">
-    Tenés <strong>20 minutos</strong> para completar el examen. El formulario se cierra automáticamente al terminar.<br><br>
+    Tenés <strong>30 minutos</strong> para completar el examen. El formulario se cierra automáticamente al terminar.<br><br>
     <strong>⚠ Queda registrado si salís de esta ventana.</strong> Cada salida queda anotada y se incluye en el informe al docente.<br><br>
     Está prohibido copiar, pegar y usar herramientas externas. Respondé con tus propias palabras.<br><br>
     Ingresá tu nombre completo y presioná <em>Iniciar examen</em>.
@@ -447,7 +447,7 @@
       <div class="exam-meta" id="meta-line">PRIMER PARCIAL</div>
     </div>
     <div class="timer-block">
-      <div class="timer-display" id="timer-display">20:00</div>
+      <div class="timer-display" id="timer-display">30:00</div>
       <div class="timer-label" id="timer-label">tiempo restante</div>
       <span class="salidas-badge" id="salidas-badge">0 salidas</span>
     </div>
@@ -492,7 +492,7 @@ const SETS = {
 };
 
 // ── ESTADO ────────────────────────────────────────────────────────
-const TOTAL_SECS = 20 * 60;
+const TOTAL_SECS = 30 * 60;
 let timerInterval = null;
 let secondsLeft = TOTAL_SECS;
 let examStarted = false;
@@ -711,8 +711,7 @@ function mostrarExito(nombre, set, tiempoUsado, salidas, conError) {
     : '';
   document.getElementById('success-msg').innerHTML = `
     <strong>${nombre}</strong> — Set ${set}<br>
-    Tiempo utilizado: ${tiempoUsado}${avisoSalidas}${avisoError}<br><br>
-    Mostrá esta pantalla al docente.
+    Tiempo utilizado: ${tiempoUsado}${avisoSalidas}${avisoError}
   `;
   document.getElementById('overlay-success').classList.remove('hidden');
 }
